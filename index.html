@@ -8,26 +8,28 @@
 <meta name="apple-mobile-web-app-title" content="JUGO助手">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="./manifest.json">
-<title>JUGO助手</title>
+<title>JUGO助手 V0.2</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:#f6f7fb;color:#111827;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Arial,sans-serif}
 .app{max-width:520px;margin:0 auto;min-height:100vh;padding:calc(18px + env(safe-area-inset-top)) 14px calc(92px + env(safe-area-inset-bottom))}
 .card{background:#fff;border-radius:22px;padding:18px;margin:12px 0;box-shadow:0 10px 30px rgba(17,24,39,.06)}
 .logo{font-size:30px;font-weight:900}.sub,.muted{font-size:14px;color:#6b7280;line-height:1.5}
-.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.big{font-size:38px;font-weight:950}.h1{font-size:28px;font-weight:900}.h2{font-size:20px;font-weight:850;margin-bottom:12px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.big{font-size:38px;font-weight:950}.h1{font-size:28px;font-weight:900}.h2{font-size:20px;font-weight:850;margin-bottom:12px}.h3{font-size:17px;font-weight:850;margin:10px 0}
 .pill{border-radius:999px;background:#f3f4f6;padding:7px 11px;font-size:13px;font-weight:700;white-space:nowrap}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini{min-height:116px}
-.green{color:#059669}.red{color:#dc2626}.yellow{color:#d97706}.notice{background:#fffbeb;border:1px solid #fde68a}
+.green{color:#059669}.red{color:#dc2626}.yellow{color:#d97706}.notice{background:#fffbeb;border:1px solid #fde68a}.handover{background:#fff7ed;border:1px solid #fed7aa}
 .progress{height:13px;background:#e5e7eb;border-radius:999px;overflow:hidden;margin-top:10px}.bar{height:100%;background:#111827;border-radius:999px}
 .item{display:flex;align-items:center;justify-content:space-between;width:100%;padding:15px 0;border:0;border-bottom:1px solid #edf0f5;background:transparent;text-align:left;font-size:17px;color:#111827}
+.step{padding:14px;border-radius:18px;background:#f9fafb;margin:12px 0;border:1px solid #edf0f5}
 input,textarea{width:100%;border:1px solid #e5e7eb;background:#f9fafb;border-radius:14px;padding:13px;font-size:16px;margin:7px 0 13px;outline:none}
 textarea{min-height:120px} label{display:block;font-size:14px;color:#6b7280;margin-top:6px}
-.btn{border:0;width:100%;padding:14px 16px;border-radius:16px;background:#111827;color:white;font-size:16px;font-weight:850}.btn.light{background:#f3f4f6;color:#111827}
+.btn{border:0;width:100%;padding:14px 16px;border-radius:16px;background:#111827;color:white;font-size:16px;font-weight:850;margin-top:8px}.btn.light{background:#f3f4f6;color:#111827}.btn.danger{background:#fee2e2;color:#991b1b}
 .page{display:none}.page.active{display:block}
 .tabbar{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);border-top:1px solid #e5e7eb;backdrop-filter:blur(12px);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
 .tabs{max-width:520px;width:100%;display:grid;grid-template-columns:repeat(5,1fr)}
 .tab{text-align:center;padding:8px 0 7px;font-size:12px;color:#6b7280}.tab.active{color:#111827;font-weight:900}.tab span{display:block;font-size:22px}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#fee2e2;color:#991b1b;font-size:12px;font-weight:800}
 </style>
 </head>
 <body>
@@ -39,6 +41,7 @@ textarea{min-height:120px} label{display:block;font-size:14px;color:#6b7280;marg
 <section class="page" id="stock"></section>
 <section class="page" id="buy"></section>
 </div>
+
 <div class="tabbar"><div class="tabs">
 <div class="tab active" data-page="home"><span>🏠</span>首页</div>
 <div class="tab" data-page="out"><span>🚚</span>出摊</div>
@@ -46,25 +49,75 @@ textarea{min-height:120px} label{display:block;font-size:14px;color:#6b7280;marg
 <div class="tab" data-page="stock"><span>📦</span>库存</div>
 <div class="tab" data-page="buy"><span>🛒</span>采购</div>
 </div></div>
+
 <script>
-const OUT=['收款手机','收款码','充电宝','零钱','冰块','冰桶','水果','牛奶','茶汤','糖浆','小料','糯米','杯子','杯盖','吸管','封口膜','面炉','雪克杯/量杯','插线板','延长线','抹布','垃圾袋','剪刀','钥匙','推车装车完成'];
-const CLOSE=['记录营业额','微信/现金核对','水果余量','冰块余量','牛奶余量','茶汤余量','糖浆余量','小料余量','糯米余量','杯子余量','杯盖余量','吸管余量','明日采购已记录'];
-const INV=[['水果','斤',4,5],['冰块','袋',1,2],['牛奶','瓶',8,6],['茶汤','份',1,1],['糖浆','瓶',1,1],['小料','份',1,2],['糯米','份',0,2],['杯子','个',300,200],['杯盖','个',300,200],['吸管','根',300,200],['封口膜','卷',1,1]];
-function bdate(){let d=new Date();if(d.getHours()<4)d.setDate(d.getDate()-1);return d.toISOString().slice(0,10)}
-function freshDay(k){return {date:k,owner:'弟弟',revenue:'',cups:'',start:'',end:'',notes:'',out:OUT.map(x=>[x,false]),close:CLOSE.map(x=>[x,false])}}
-function load(){let d=JSON.parse(localStorage.jugo_v01||'{}'); if(!d.days)d.days={}; if(!d.inv)d.inv=INV.map(x=>({name:x[0],unit:x[1],current:x[2],safe:x[3],note:''})); let k=bdate(); if(!d.days[k])d.days[k]=freshDay(k); localStorage.jugo_v01=JSON.stringify(d); return d}
-function save(d){localStorage.jugo_v01=JSON.stringify(d)}
+const STEPS=[
+  {title:'① 打开冰箱',items:['水果','糖浆','小料','糯米']},
+  {title:'② 制冰',items:['把制冰机里的冰块舀到冰箱/冷柜','检查今晚冰块是否足够']},
+  {title:'③ 耗材',items:['杯子','杯盖','吸管','封口膜']},
+  {title:'④ 装车',items:['推车装车完成']}
+];
+const CLOSE=['记录营业额','微信/现金核对','水果余量','冰块余量','糖浆余量','小料余量','糯米余量','杯子余量','杯盖余量','吸管余量','明日采购已记录'];
+const INV=[['水果','斤',4,5],['冰块','袋',1,2],['糖浆','瓶',1,1],['小料','份',1,2],['糯米','份',0,2],['杯子','个',300,200],['杯盖','个',300,200],['吸管','根',300,200],['封口膜','卷',1,1]];
+const QUICK=['明天补糯米','明天补水果','明天补小料','明天补糖浆','明天补封口膜','明天多准备冰块','明天带垃圾袋','明天带招牌'];
+
+function bdate(offset=0){let d=new Date();if(d.getHours()<4)d.setDate(d.getDate()-1);d.setDate(d.getDate()+offset);return d.toISOString().slice(0,10)}
+function freshDay(k){
+  return {date:k,owner:'弟弟',revenue:'',cups:'',start:'',end:'',notes:'',
+    out:STEPS.flatMap(s=>s.items.map(x=>[x,false,s.title])),
+    close:CLOSE.map(x=>[x,false]),
+    handover:[],
+    special:[]
+  }
+}
+function load(){
+  let d=JSON.parse(localStorage.jugo_v02||localStorage.jugo_v01||'{}');
+  if(!d.days)d.days={}; 
+  if(!d.inv)d.inv=INV.map(x=>({name:x[0],unit:x[1],current:x[2],safe:x[3],note:''}));
+  let k=bdate(), y=bdate(-1);
+  if(!d.days[k]) {
+    d.days[k]=freshDay(k);
+    if(d.days[y] && d.days[y].handover) {
+      d.days[k].special = d.days[y].handover.map(t=>[t,false]);
+    }
+  }
+  localStorage.jugo_v02=JSON.stringify(d); 
+  return d
+}
+function save(d){localStorage.jugo_v02=JSON.stringify(d)}
 function day(d){return d.days[bdate()]}
-function render(){let d=load(),dy=day(d),done=dy.out.filter(x=>x[1]).length,pct=Math.round(done/dy.out.length*100),needs=d.inv.filter(x=>+x.current<+x.safe),target=1000,tp=Math.min(Math.round((+dy.revenue||0)/target*100),100);bizDate.textContent=`营业日：${dy.date}（16:00～次日04:00）`;
-home.innerHTML=`<div class="card"><div class="row"><div><div class="muted">今日营业额</div><div class="big">￥${dy.revenue||0}</div></div><span class="pill">负责人：${dy.owner}</span></div><div class="progress"><div class="bar" style="width:${tp}%"></div></div><div class="muted">目标 ￥1000，已完成 ${tp}%</div></div><div class="grid"><div class="card mini" onclick="go('out')"><div class="h2">🚚 出摊</div><div class="${pct==100?'green':'yellow'}">${done}/${dy.out.length} 完成</div><div class="muted">${pct==100?'可以出发':'继续检查'}</div></div><div class="card mini" onclick="go('buy')"><div class="h2">🛒 采购</div><div class="${needs.length?'red':'green'}">${needs.length} 项需补</div><div class="muted">${needs.length?needs.map(x=>x.name).slice(0,3).join(' / '):'库存正常'}</div></div></div><div class="card"><div class="h2">📦 库存预警</div>${d.inv.map(x=>`<div class="item"><span>${+x.current<+x.safe?'🔴':'🟢'} ${x.name}</span><span class="${+x.current<+x.safe?'red':'green'}">${x.current}${x.unit} / 安全${x.safe}${x.unit}</span></div>`).join('')}</div><div class="card notice"><div class="h2">📲 安装到 iPhone 桌面</div><div class="muted">部署后用 Safari 打开网址：分享 → 添加到主屏幕。</div></div>`;
-out.innerHTML=`<div class="card"><div class="h1">🚚 出摊 Checklist</div><div class="muted">${done}/${dy.out.length} 已完成</div></div><div class="card">${dy.out.map((x,i)=>`<button class="item" onclick="toggleOut(${i})"><span>${x[0]}</span><span>${x[1]?'✅':'□'}</span></button>`).join('')}</div><div class="card"><div class="${done==dy.out.length?'green':'red'} h2">${done==dy.out.length?'✅ 可以出摊':'还有项目没完成，先别出门'}</div><button class="btn light" onclick="resetOut()">清空今天勾选</button></div>`;
-close.innerHTML=`<div class="card"><div class="h1">🌙 收摊记录</div><div class="muted">同一晚营业额统一记到今天营业日</div></div><div class="card"><label>开始时间</label><input value="${dy.start}" onchange="setDay('start',this.value)" placeholder="18:30"><label>结束时间</label><input value="${dy.end}" onchange="setDay('end',this.value)" placeholder="02:15"><label>营业额</label><input type="number" value="${dy.revenue}" onchange="setDay('revenue',this.value)" placeholder="968"><label>杯数</label><input type="number" value="${dy.cups}" onchange="setDay('cups',this.value)" placeholder="31"></div><div class="card"><div class="h2">收摊 Checklist</div>${dy.close.map((x,i)=>`<button class="item" onclick="toggleClose(${i})"><span>${x[0]}</span><span>${x[1]?'✅':'□'}</span></button>`).join('')}</div><div class="card"><div class="h2">今日复盘</div><textarea onchange="setDay('notes',this.value)" placeholder="今天做得好/问题/明天改进">${dy.notes}</textarea></div>`;
+function render(){
+let d=load(),dy=day(d),done=dy.out.filter(x=>x[1]).length,pct=Math.round(done/dy.out.length*100),needs=d.inv.filter(x=>+x.current<+x.safe),target=1000,tp=Math.min(Math.round((+dy.revenue||0)/target*100),100),specialLeft=dy.special.filter(x=>!x[1]).length;
+bizDate.textContent=`营业日：${dy.date}（16:00～次日04:00）`;
+
+home.innerHTML=`<div class="card"><div class="row"><div><div class="muted">今日营业额</div><div class="big">￥${dy.revenue||0}</div></div><span class="pill">负责人：${dy.owner}</span></div><div class="progress"><div class="bar" style="width:${tp}%"></div></div><div class="muted">目标 ￥1000，已完成 ${tp}%</div></div>
+${dy.special.length?`<div class="card handover"><div class="h2">⭐ 今日特别提醒 <span class="badge">${specialLeft}项未完成</span></div>${dy.special.map((x,i)=>`<button class="item" onclick="toggleSpecial(${i})"><span>${x[0]}</span><span>${x[1]?'✅':'□'}</span></button>`).join('')}</div>`:''}
+<div class="grid"><div class="card mini" onclick="go('out')"><div class="h2">🚚 出摊</div><div class="${pct==100?'green':'yellow'}">${done}/${dy.out.length} 完成</div><div class="muted">${pct==100?'可以出发':'继续检查'}</div></div><div class="card mini" onclick="go('buy')"><div class="h2">🛒 采购</div><div class="${needs.length?'red':'green'}">${needs.length} 项需补</div><div class="muted">${needs.length?needs.map(x=>x.name).slice(0,3).join(' / '):'库存正常'}</div></div></div>
+<div class="card"><div class="h2">📦 库存预警</div>${d.inv.map(x=>`<div class="item"><span>${+x.current<+x.safe?'🔴':'🟢'} ${x.name}</span><span class="${+x.current<+x.safe?'red':'green'}">${x.current}${x.unit} / 安全${x.safe}${x.unit}</span></div>`).join('')}</div>`;
+
+out.innerHTML=`<div class="card"><div class="h1">🚚 出摊流程</div><div class="muted">${done}/${dy.out.length} 已完成｜按家里的动线一步步检查</div></div>
+${STEPS.map(s=>`<div class="card"><div class="h2">${s.title}</div>${dy.out.filter(x=>x[2]==s.title).map(x=>{let idx=dy.out.indexOf(x);return `<button class="item" onclick="toggleOut(${idx})"><span>${x[0]}</span><span>${x[1]?'✅':'□'}</span></button>`}).join('')}</div>`).join('')}
+<div class="card"><div class="${done==dy.out.length?'green':'red'} h2">${done==dy.out.length?'✅ 可以出摊':'还有项目没完成，先别出门'}</div><button class="btn light" onclick="resetOut()">清空今天勾选</button></div>`;
+
+close.innerHTML=`<div class="card"><div class="h1">🌙 收摊记录</div><div class="muted">今晚收摊后，把明天要注意的事交接给明天</div></div>
+<div class="card"><label>开始时间</label><input value="${dy.start}" onchange="setDay('start',this.value)" placeholder="18:30"><label>结束时间</label><input value="${dy.end}" onchange="setDay('end',this.value)" placeholder="02:15"><label>营业额</label><input type="number" value="${dy.revenue}" onchange="setDay('revenue',this.value)" placeholder="968"><label>杯数</label><input type="number" value="${dy.cups}" onchange="setDay('cups',this.value)" placeholder="31"></div>
+<div class="card"><div class="h2">收摊 Checklist</div>${dy.close.map((x,i)=>`<button class="item" onclick="toggleClose(${i})"><span>${x[0]}</span><span>${x[1]?'✅':'□'}</span></button>`).join('')}</div>
+<div class="card handover"><div class="h2">📝 明天交接</div><div class="muted">今晚勾选/新增的内容，会在明天首页变成「今日特别提醒」。</div>${QUICK.map(q=>`<button class="item" onclick="addHandover('${q}')"><span>${q}</span><span>＋</span></button>`).join('')}<label>自定义提醒</label><input id="customHandover" placeholder="例如：明天带西瓜 / 明天补芒果"><button class="btn" onclick="addCustom()">加入明天提醒</button>${dy.handover.length?`<div class="h3">已加入：</div>${dy.handover.map((x,i)=>`<div class="item"><span>${x}</span><span onclick="delHandover(${i})">删除</span></div>`).join('')}`:''}</div>
+<div class="card"><div class="h2">今日复盘</div><textarea onchange="setDay('notes',this.value)" placeholder="今天做得好/问题/明天改进">${dy.notes}</textarea></div>`;
+
 stock.innerHTML=`<div class="card"><div class="h1">📦 库存中心</div><div class="muted">低于安全库存会自动进入采购单</div></div>${d.inv.map((x,i)=>`<div class="card"><div class="row"><div class="h2">${x.name}</div><span class="${+x.current<+x.safe?'red':'green'}">${+x.current<+x.safe?'🔴 需补':'🟢 正常'}</span></div><label>当前库存（${x.unit}）</label><input type="number" value="${x.current}" onchange="setInv(${i},'current',this.value)"><label>安全库存（${x.unit}）</label><input type="number" value="${x.safe}" onchange="setInv(${i},'safe',this.value)"><label>备注/有效期</label><input value="${x.note}" onchange="setInv(${i},'note',this.value)" placeholder="如：明天到期"></div>`).join('')}`;
+
 buy.innerHTML=`<div class="card"><div class="h1">🛒 自动采购单</div><div class="muted">根据库存中心自动生成</div></div>${needs.length?needs.map(x=>`<div class="card row"><div><div class="h2">${x.name}</div><div class="muted">当前 ${x.current}${x.unit}｜安全 ${x.safe}${x.unit}</div></div><div class="red">补 ${Math.max(0,+x.safe-+x.current)}${x.unit}</div></div>`).join(''):'<div class="card green h2">今天暂无必须采购项</div>'}<button class="btn" onclick="copyBuy()">复制采购单发到群里</button>`}
 function upd(fn){let d=load();fn(d,day(d));save(d);render()}
-function toggleOut(i){upd((d,dy)=>dy.out[i][1]=!dy.out[i][1])} function toggleClose(i){upd((d,dy)=>dy.close[i][1]=!dy.close[i][1])}
+function toggleOut(i){upd((d,dy)=>dy.out[i][1]=!dy.out[i][1])}
+function toggleClose(i){upd((d,dy)=>dy.close[i][1]=!dy.close[i][1])}
+function toggleSpecial(i){upd((d,dy)=>dy.special[i][1]=!dy.special[i][1])}
 function resetOut(){if(confirm('清空今天出摊勾选？'))upd((d,dy)=>dy.out.forEach(x=>x[1]=false))}
-function setDay(k,v){upd((d,dy)=>dy[k]=v)} function setInv(i,k,v){upd(d=>d.inv[i][k]=v)}
+function setDay(k,v){upd((d,dy)=>dy[k]=v)}
+function setInv(i,k,v){upd(d=>d.inv[i][k]=v)}
+function addHandover(t){upd((d,dy)=>{if(!dy.handover.includes(t))dy.handover.push(t)})}
+function addCustom(){let v=document.getElementById('customHandover').value.trim(); if(v) addHandover(v)}
+function delHandover(i){upd((d,dy)=>dy.handover.splice(i,1))}
 function copyBuy(){let d=load(),needs=d.inv.filter(x=>+x.current<+x.safe);let txt=needs.length?'JUGO采购单：\n'+needs.map(x=>`- ${x.name}：补 ${Math.max(0,+x.safe-+x.current)}${x.unit}`).join('\n'):'今天暂无必须采购项';navigator.clipboard?.writeText(txt);alert(txt)}
 function go(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.page==id))}
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>go(t.dataset.page));render()
