@@ -1,0 +1,1 @@
+JUGO助手 V0.2：出摊流程式Checklist + 收摊明天交接 + 第二天今日特别提醒。上传 index.html 覆盖 GitHub 原文件即可。
